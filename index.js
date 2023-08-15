@@ -1,40 +1,38 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import * as fs from "fs"; 
-const url = "https://stockcircle.com";
+const url = 'http://stockcircle.com';
+const uri = 'https://www.google.com';
 
 class App {
 
     constructor(site) {
         this.site = site;
-        this.data = undefined;
+        this.data = " not undefined ";
     }
 
     async getSiteData() {
-        this.site = await axios.get(this.site, (response) => {
-            return response.data;
-        });
-       
-        this.data = cheerio.load(this.site);
-
+        const response = await axios.get(this.site + '/best-investors');
+        return response.data;
     }
 
-    async traverseData(elements) {
-        this.data = this.data(elements);
+    async setInvestors(elements) {
+        const $ = cheerio.load(await this.getSiteData());
+        this.data = {
+            first: `1. ${$(elements).eq(1).text()} \n`,
+            second: `2. ${$(elements).eq(2).text()} \n`,
+            third: `3. ${$(elements).eq(3).text()} \n`
+        };
     }
 
-    displayData() {
-        console.log(this.data);
+    getInvestors() {
+        console.log(this.data.first + this.data.second + this.data.third);
     }
 }
 
 const app = new App(url);
 
-await app.getSiteData();
-await app.traverseData('h2.home-box__title');
-app.displayData();
+console.log("Top Investors...\n");
+await app.setInvestors('h2.home-box__title');
+app.getInvestors();
 
-/*
- * Problem:
- * cheerio is not finding anything by searching elements passed to app.traverseData();
- */
