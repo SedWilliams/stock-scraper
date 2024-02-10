@@ -1,38 +1,43 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import * as fs from "fs"; 
-const url = 'http://stockcircle.com';
-const uri = 'https://www.google.com';
+const url = 'http://stockcircle.com/best-investors';
+const url2 = 'https://www.google.com';
 
-class App {
 
-    constructor(site) {
-        this.site = site;
-        this.data = " not undefined ";
+class HTTPApi {
+
+    private static siteURL;
+
+    constructor(siteURL) {
+        this.siteURL = siteURL;
     }
 
-    async getSiteData() {
-        const response = await axios.get(this.site + '/best-investors');
+    async getSiteDOM() {
+        const response = await axios.get(this.siteURL);
         return response.data;
     }
 
-    async setInvestors(elements) {
-        const $ = cheerio.load(await this.getSiteData());
-        this.data = {
-            first: `1. ${$(elements).eq(1).text()} \n`,
-            second: `2. ${$(elements).eq(2).text()} \n`,
-            third: `3. ${$(elements).eq(3).text()} \n`
+    setTopThreeInvestors() [
+        const $ = cheerio.load(await this.getSiteDOM());
+        return {
+            {
+                first: `1. ${$(elements).eq(1).text()} \n`,
+                second: `2. ${$(elements).eq(2).text()} \n`,
+                third: `3. ${$(elements).eq(3).text()} \n`
+            }
         };
     }
 
     getInvestors() {
-        console.log(this.data.first + this.data.second + this.data.third);
+        const topThreeInvestorData = setTopThreeInvestors();
+        console.log(topThreeInvestorData.first + topThreeInvestorData.second + topThreeInvestorData.third);
     }
 }
 
-const app = new App(url);
+const HTTPApi = new HTTPApi(url);
 
 console.log("Top Investors...\n");
-await app.setInvestors('h2.home-box__title');
-app.getInvestors();
+await HTTPApi.setTopThreeInvestors('h2.home-box__title');
+HTTPApi.getInvestors();
 console.log("<--------------------->");
