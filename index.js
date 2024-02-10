@@ -7,7 +7,7 @@ const url2 = 'https://www.google.com';
 
 class HTTPApi {
 
-    private static siteURL;
+    static siteURL;
 
     constructor(siteURL) {
         this.siteURL = siteURL;
@@ -18,15 +18,14 @@ class HTTPApi {
         return response.data;
     }
 
-    setTopThreeInvestors() [
+    async setTopThreeInvestors(elements) {
         const $ = cheerio.load(await this.getSiteDOM());
         return {
-            {
+                //string template -> cheerio query -> newline
                 first: `1. ${$(elements).eq(1).text()} \n`,
                 second: `2. ${$(elements).eq(2).text()} \n`,
                 third: `3. ${$(elements).eq(3).text()} \n`
-            }
-        };
+            };
     }
 
     getInvestors() {
