@@ -35,4 +35,4 @@ const app = new App(url);
 console.log("Top Investors...\n");
 await app.setInvestors('h2.home-box__title');
 app.getInvestors();
-
+console.log("<--------------------->");
